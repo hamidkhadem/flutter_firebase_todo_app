@@ -1,0 +1,11 @@
+.dart_tool/*
+.idea/*
+.metadata
+android/*
+build/*
+ios/*
+linux/*
+macos/*
+test/*
+web/*
+windows/*
