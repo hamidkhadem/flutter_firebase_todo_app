@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 Future<void> main() async {
   // initialize firebase
@@ -70,15 +69,13 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<int> colorCodes = <int>[600, 500, 100];
 
   void _incrementTask() {
-    // tasks.add({
-    //   'title': 'Task $_counter',
-    //   'description': 'This is the description for Task $_counter.',
-    //   'complete': false,
-    // });
-    // setState(() {
-    //   databaseRef.set(tasks);
-    //   _counter++;
-    // });
+// Open a new page and get a string from the user.
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AddTask(), //GetStringFromUserPage(),
+      ),
+    );
   }
 
   @override
@@ -136,6 +133,83 @@ class _MyHomePageState extends State<MyHomePage> {
         label: const Text('Add Task'),
         icon: const Icon(Icons.add_task_outlined),
         // tooltip: _counter.toString(),
+      ),
+    );
+  }
+}
+
+// create add task's page
+class AddTask extends StatefulWidget {
+  const AddTask({super.key});
+
+  @override
+  State<AddTask> createState() => _AddTaskState();
+}
+
+class _AddTaskState extends State<AddTask> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      // for scrollable page
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        centerTitle: true,
+        title: const Text(
+          'Add New Task',
+          textAlign: TextAlign.center,
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              // title input
+              const Padding(
+                padding: EdgeInsets.all(10),
+                child: TextField(
+                  maxLength: 40,
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.task_alt_sharp),
+                    border: OutlineInputBorder(),
+                    labelText: 'Task\'s Title',
+                  ),
+                ),
+              ),
+              // description input
+              const Padding(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: TextField(
+                  maxLines: 6,
+                  minLines: 3,
+                  decoration: InputDecoration(
+                    icon: Icon(Icons.task_outlined),
+                    border: OutlineInputBorder(),
+                    labelText: 'Task\'s Description',
+                  ),
+                ),
+              ),
+              // submit button
+              Padding(
+                padding: const EdgeInsets.fromLTRB(50, 20, 0, 10),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // Validate will return true if the form is valid, or false if
+                    // the form is invalid.
+                    if (_formKey.currentState!.validate()) {
+                      // Process data.
+                    }
+                  },
+                  child: const Text('Submit'),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
