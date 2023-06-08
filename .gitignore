@@ -9,3 +9,7 @@ macos/*
 test/*
 web/*
 windows/*
+.firebase/*
+.firebaserc
+.flutter-plugins
+.flutter-plugins-dependencies

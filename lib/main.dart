@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
 
-void main() {
-  
+Future<void> main() async {
+  // initialize firebase
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  // DatabaseReference postListRef = FirebaseDatabase.instance.ref("posts");
+  // DatabaseReference newPostRef = postListRef.push();
+  // newPostRef.set({
+  //   'Task':'Yes',
+  // });
   runApp(const MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -13,7 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Todo Application',
       theme: ThemeData(
         // This is the theme of your application.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
@@ -37,6 +47,14 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   bool light = false;
+  // count number of task
+  int counter = 0;
+  // list of tasks
+  final tasks = [];
+  // database refrence
+  // FirebaseDatabase database = FirebaseDatabase.instance;
+  // DatabaseReference databaseRef =
+  //     FirebaseDatabase.instance.ref('Tasks/');
 
   final MaterialStateProperty<Icon?> thumbIcon =
       MaterialStateProperty.resolveWith<Icon?>(
@@ -51,13 +69,17 @@ class _MyHomePageState extends State<MyHomePage> {
   final List<String> entries = <String>['A', 'B', 'C'];
   final List<int> colorCodes = <int>[600, 500, 100];
 
-  // void _incrementCounter() {
-  //   setState(() {
-  //     // This call to setState tells the Flutter framework that something has
-  //     // changed in this State.
-  //     _counter++;
-  //   });
-  // }
+  void _incrementTask() {
+    // tasks.add({
+    //   'title': 'Task $_counter',
+    //   'description': 'This is the description for Task $_counter.',
+    //   'complete': false,
+    // });
+    // setState(() {
+    //   databaseRef.set(tasks);
+    //   _counter++;
+    // });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,9 +132,10 @@ class _MyHomePageState extends State<MyHomePage> {
             );
           }),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: _incrementTask,
         label: const Text('Add Task'),
         icon: const Icon(Icons.add_task_outlined),
+        // tooltip: _counter.toString(),
       ),
     );
   }
