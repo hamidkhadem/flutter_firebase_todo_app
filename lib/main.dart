@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 Future<void> main() async {
   // initialize firebase
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  // DatabaseReference postListRef = FirebaseDatabase.instance.ref("posts");
-  // DatabaseReference newPostRef = postListRef.push();
-  // newPostRef.set({
-  //   'Task':'Yes',
-  // });
+
   runApp(const MyApp());
 }
 
@@ -50,10 +48,10 @@ class _MyHomePageState extends State<MyHomePage> {
   int counter = 0;
   // list of tasks
   final tasks = [];
-  // database refrence
-  // FirebaseDatabase database = FirebaseDatabase.instance;
-  // DatabaseReference databaseRef =
-  //     FirebaseDatabase.instance.ref('Tasks/');
+
+  // database  reference
+  DatabaseReference taskRef = FirebaseDatabase.instance.ref('Tasks');
+  
 
   final MaterialStateProperty<Icon?> thumbIcon =
       MaterialStateProperty.resolveWith<Icon?>(
@@ -132,7 +130,6 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: _incrementTask,
         label: const Text('Add Task'),
         icon: const Icon(Icons.add_task_outlined),
-        // tooltip: _counter.toString(),
       ),
     );
   }
@@ -147,7 +144,13 @@ class AddTask extends StatefulWidget {
 }
 
 class _AddTaskState extends State<AddTask> {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
+  // value for title & description
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  // get database reference
+  DatabaseReference taskListRef = FirebaseDatabase.instance.ref('Tasks').push();
+  // DatabaseReference newtaskRef = taskListRef.push();
 
   @override
   Widget build(BuildContext context) {
@@ -169,24 +172,32 @@ class _AddTaskState extends State<AddTask> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               // title input
-              const Padding(
-                padding: EdgeInsets.all(10),
-                child: TextField(
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: TextFormField(
+                  controller: _titleController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter Task\'s title';
+                    }
+                    return null;
+                  },
                   maxLength: 40,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     icon: Icon(Icons.task_alt_sharp),
                     border: OutlineInputBorder(),
-                    labelText: 'Task\'s Title',
+                    label: Text('Task\'s Title'),
                   ),
                 ),
               ),
               // description input
-              const Padding(
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 child: TextField(
+                  controller: _descriptionController,
                   maxLines: 6,
                   minLines: 3,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     icon: Icon(Icons.task_outlined),
                     border: OutlineInputBorder(),
                     labelText: 'Task\'s Description',
@@ -197,13 +208,7 @@ class _AddTaskState extends State<AddTask> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(50, 20, 0, 10),
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Validate will return true if the form is valid, or false if
-                    // the form is invalid.
-                    if (_formKey.currentState!.validate()) {
-                      // Process data.
-                    }
-                  },
+                  onPressed: _onSubmit,
                   child: const Text('Submit'),
                 ),
               ),
@@ -212,5 +217,26 @@ class _AddTaskState extends State<AddTask> {
         ),
       ),
     );
+  }
+
+  // save info on database
+  void _onSubmit() {
+    // Validate will return true if the form is valid, or false if
+    // the form is invalid.
+    if (_formKey.currentState!.validate()) {
+      // Process data.
+      // get data from textfields
+      final String title = _titleController.text;
+      final String description = _descriptionController.text;
+      // write on the database
+      taskListRef.set({
+        'title': title,
+        'description': description,
+        'status': false,
+      });
+
+      // go back to home
+      Navigator.pop(context);
+    }
   }
 }

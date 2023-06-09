@@ -58,6 +58,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '364948213434',
     projectId: 'flutter-firebase-todo-ap-69e14',
     authDomain: 'flutter-firebase-todo-ap-69e14.firebaseapp.com',
+    databaseURL: 'https://flutter-firebase-todo-ap-69e14-default-rtdb.europe-west1.firebasedatabase.app',
     storageBucket: 'flutter-firebase-todo-ap-69e14.appspot.com',
   );
 }
