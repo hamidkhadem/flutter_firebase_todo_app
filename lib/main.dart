@@ -1,3 +1,4 @@
+import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
@@ -9,7 +10,6 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-
   runApp(const MyApp());
 }
 
@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Todo Application',
       theme: ThemeData(
         // This is the theme of your application.
@@ -51,7 +52,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   // database  reference
   DatabaseReference taskRef = FirebaseDatabase.instance.ref('Tasks');
-  
 
   final MaterialStateProperty<Icon?> thumbIcon =
       MaterialStateProperty.resolveWith<Icon?>(
@@ -62,9 +62,6 @@ class _MyHomePageState extends State<MyHomePage> {
       return const Icon(Icons.close);
     },
   );
-
-  final List<String> entries = <String>['A', 'B', 'C'];
-  final List<int> colorCodes = <int>[600, 500, 100];
 
   void _incrementTask() {
 // Open a new page and get a string from the user.
@@ -85,46 +82,20 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: Center(
-          child: Text(
-            widget.title.toUpperCase(),
-            textAlign: TextAlign.center,
-          ),
+        centerTitle: true,
+        title: Text(
+          widget.title.toUpperCase(),
+          textAlign: TextAlign.center,
         ),
       ),
-      body: ListView.builder(
+      body: FirebaseAnimatedList(
           padding: const EdgeInsets.all(2),
-          itemCount: entries.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Center(
-              child: Card(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    const ListTile(
-                      leading: Icon(Icons.delete_outline),
-                      title: Text('Task\'s Title'),
-                      subtitle: Text('Task\'s Description'),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Switch(
-                          thumbIcon: thumbIcon,
-                          value: light,
-                          onChanged: (bool value) {
-                            setState(() {
-                              light = value;
-                            });
-                          },
-                        ),
-                        const SizedBox(width: 8),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            );
+          query: taskRef,
+          itemBuilder: (BuildContext context, DataSnapshot snapshot,
+              Animation<double> animation, int index) {
+            Map task = snapshot.value as Map;
+            task['key'] = snapshot.key;
+            return _listTask(task: task);
           }),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _incrementTask,
@@ -133,6 +104,56 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
     );
   }
+
+  Widget _listTask({required Map task}) {
+    Icon taskIcon = const Icon(Icons.task_outlined);
+    if (task['status']) {
+      taskIcon = const Icon(Icons.task);
+    }
+
+    return Center(
+      child: Card(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              leading: taskIcon, //const Icon(Icons.task_outlined),
+              title: Text(task['title']),
+              subtitle: Text(task['description']),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                IconButton(onPressed: _editTask, icon: const Icon(Icons.edit)),
+                IconButton(
+                    onPressed: _deleteTask, icon: const Icon(Icons.delete)),
+                const SizedBox(width: 4),
+                Switch(
+                  thumbIcon: thumbIcon,
+                  value: task['status'],
+                  onChanged: (bool value) {
+                    setState(() {
+                      task['status'] = value;
+                      taskRef.child(task['key']).update({
+                        'title': task['title'],
+                        'description': task['description'],
+                        'status': task['status']
+                      });
+                    });
+                  },
+                ),
+                const SizedBox(width: 8),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _editTask() {}
+
+  void _deleteTask() {}
 }
 
 // create add task's page
