@@ -62,21 +62,9 @@ class _MyHomePageState extends State<MyHomePage> {
       return const Icon(Icons.close);
     },
   );
-
-  void _incrementTask() {
-// Open a new page and get a string from the user.
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const AddTask(), //GetStringFromUserPage(),
-      ),
-    );
-  }
-
+// This method is rerun every time setState is called.
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called.
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -105,7 +93,20 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+// function to go add task page
+  void _incrementTask() {
+// Open a new page and get a string from the user.
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AddTask(), //GetStringFromUserPage(),
+      ),
+    );
+  }
+
+// create list of tasks from firebase
   Widget _listTask({required Map task}) {
+    // defined task Icon on the left of the card
     Icon taskIcon = const Icon(Icons.task_outlined);
     if (task['status']) {
       taskIcon = const Icon(Icons.task);
@@ -124,10 +125,24 @@ class _MyHomePageState extends State<MyHomePage> {
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
-                IconButton(onPressed: _editTask, icon: const Icon(Icons.edit)),
+                // edit button
                 IconButton(
-                    onPressed: _deleteTask, icon: const Icon(Icons.delete)),
-                const SizedBox(width: 4),
+                  onPressed: _editTask,
+                  icon: const Icon(Icons.edit),
+                ),
+                // delete button
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      taskRef.child(task['key']).remove();
+                    });
+                  },
+                  icon: const Icon(Icons.delete),
+                ),
+                const SizedBox(
+                  width: 4,
+                ),
+                // statuse button
                 Switch(
                   thumbIcon: thumbIcon,
                   value: task['status'],
@@ -142,7 +157,9 @@ class _MyHomePageState extends State<MyHomePage> {
                     });
                   },
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(
+                  width: 8,
+                ),
               ],
             ),
           ],
@@ -151,9 +168,16 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _editTask() {}
-
-  void _deleteTask() {}
+// defined funtion
+  void _editTask() {
+    // Open a new page and get a string from the user.
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const AddTask(), //GetStringFromUserPage(),
+      ),
+    );
+  }
 }
 
 // create add task's page
