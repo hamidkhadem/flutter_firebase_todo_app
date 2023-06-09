@@ -1,16 +1,19 @@
 # flutter_firebase_todo_app
 
-A new Flutter project.
+a Todo List Application for Full stafck Developer job role at Excererate
 
-## Getting Started
+## Description:
+a Todo List application that allows users to create, update, and delete tasks. The application used flutter framework for frontend and firebase for backend components.
 
-This project is a starting point for a Flutter application.
+## Frontend:
 
-A few resources to get you started if this is your first Flutter project:
+* Implement a user interface where users can view, add, edit, and delete tasks.
+* Display the list of tasks on the homepage.
+* Include functionality to add a new task with a title and description.
+* Enable users to mark tasks as completed or incomplete.
+* Implement a feature to edit the task details, including the title and description.
+* Provide a way to delete tasks from the list.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Backend:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+I was using firebase solution for backend, it's a perfect cloud solution that you can add database, auth, hosting your web app on one place.
