@@ -1,7 +1,7 @@
 # flutter_firebase_todo_app
 
 a Todo List Application for Full stafck Developer job role at Excererate
-The link to the web app:
+I deploy the application web on firebase hosting service and that is the URL:
 https://flutter-firebase-todo-ap-69e14.web.app/
 
 ## Description:
@@ -19,3 +19,10 @@ a Todo List application that allows users to create, update, and delete tasks. T
 ## Backend:
 
 I was using firebase solution for backend, it's a perfect cloud solution that you can add database, auth, hosting your web app on one place.
+
+## Insruction to set up and run the app
+
+1. run this command: `flutter create <nameOfproject>`
+2. replace lib folder
+3. copy "firebase.json" and "pubspec.yaml" on project folder
+4. run this command: `flutter run -d chrome`
