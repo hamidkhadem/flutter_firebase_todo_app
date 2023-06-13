@@ -1,6 +1,6 @@
 # flutter_firebase_todo_app
 
-a Todo List Application for Full stafck Developer job role at Excererate
+a Todo List Application for Full stack Developer job role at Excererate
 I deploy the application web on firebase hosting service and that is the URL:
 https://flutter-firebase-todo-ap-69e14.web.app/
 
